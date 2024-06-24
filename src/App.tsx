@@ -4,28 +4,59 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import Block from "./components/Block";
 
-function App() {
-  const [count, setCount] = useState(0);
+interface Block {
+  id: string;
+  text: string;
+  evaluatedText: string;
+}
 
-  const [blocks, setBlocks] = useState<string[]>([]);
+function App() {
+  const [count, setCount] = useState(1);
+
+  const [blocks, setBlocks] = useState<Block[]>([]);
 
   function addBlocks() {
-    setBlocks((prevBlocks) => [...prevBlocks, "newBlock"]);
+    const newId = `A${blocks.length + 1}`;
+    setBlocks((prevBlocks) => [
+      ...prevBlocks,
+      { id: newId, text: "", evaluatedText: "" },
+    ]);
+  }
+
+  function handleTextChange(id: string, newText: string) {
+    setBlocks((prevBlocks) =>
+      prevBlocks.map((block) =>
+        block.id === id ? { ...block, text: newText } : block
+      )
+    );
+  }
+
+  function handleEvaluatedTextChange(id: string, newEvaluatedText: string) {
+    setBlocks((prevBlocks) =>
+      prevBlocks.map((block) =>
+        block.id === id ? { ...block, evaluatedText: newEvaluatedText } : block
+      )
+    );
   }
 
   return (
     <>
       <div className="mainContainer">
-        <>
-          {blocks.map((item, index) => {
-            return (
+        <div>
+          <>
+            {blocks.map((block, index) => (
               <div className="container" key={index}>
-                <Block />
+                <Block
+                  id={block.id}
+                  text={block.text}
+                  onTextChange={handleTextChange}
+                  onEvaluatedTextChange={handleEvaluatedTextChange}
+                />
               </div>
-            );
-          })}
-        </>
-        <div className="button">
+            ))}
+          </>
+        </div>
+        <div className="Mainbutton">
           <button className="btn btn-primary" onClick={addBlocks}>
             Add new block
           </button>
